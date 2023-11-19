@@ -1,0 +1,35 @@
+---
+# tasks file for docker_installation
+    - name: Install necessary packages
+      apt:
+        name: "{{item}}"
+        state: present
+      loop:
+        - ca-certificates
+        - curl
+        - gnupg
+    - name: Create directory for keyrings
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+    - name: Add Docker repository key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker API repo
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+    - name: Install Dokcer packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
